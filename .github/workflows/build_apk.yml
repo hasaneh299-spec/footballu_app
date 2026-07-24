@@ -20,10 +20,14 @@ jobs:
       - name: Install System Gradle
         run: sudo apt-get update && sudo apt-get install -y gradle
 
-      - name: Auto-Generate Android Project
+      - name: Auto-Generate Android Project & Wrapper Files
         run: |
           mkdir -p app/src/main/java/com/hasan/sportsapp
           mkdir -p app/src/main/res/values
+          mkdir -p gradle/wrapper
+
+          # إنشاء ملف إعدادات الـ Wrapper بالضبط بالإصدار 7.5 المطلوب
+          printf 'distributionBase=GRADLE_USER_HOME\ndistributionPath=wrapper/dists\ndistributionUrl=https\\\://services.gradle.org/distributions/gradle-7.5-all.zip\nzipStoreBase=GRADLE_USER_HOME\nzipStorePath=wrapper/dists' > gradle/wrapper/gradle-wrapper.properties
 
           printf 'package com.hasan.sportsapp\nimport android.app.Activity\nimport android.os.Bundle\nimport android.widget.TextView\nclass MainActivity : Activity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        val tv = TextView(this)\n        tv.text = "تطبيق الرياضة يعمل بنجاح!"\n        setContentView(tv)\n    }\n}' > app/src/main/java/com/hasan/sportsapp/MainActivity.kt
 
@@ -35,6 +39,20 @@ jobs:
 
           printf 'plugins {\n    id \x27com.android.application\x27\n    id \x27org.jetbrains.kotlin.android\x27\n}\nandroid {\n    namespace \x27com.hasan.sportsapp\x27\n    compileSdk 33\n    defaultConfig {\n        applicationId \x27com.hasan.sportsapp\x27\n        minSdk 21\n        targetSdk 33\n        versionCode 1\n        versionName "1.0"\n    }\n    buildTypes {\n        release {\n            minifyEnabled false\n        }\n    }\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n    kotlinOptions {\n        jvmTarget = \x2717\x27\n    }\n}\ndependencies {\n    implementation \x27androidx.core:core-ktx:1.9.0\x27\n}' > app/build.gradle
 
+          # توليد ملفات الـ Wrapper لتكون جاهزة تماماً
+          gradle wrapper --gradle-version 7.5
+
+      - name: Build Debug APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: '**/build/outputs/apk/debug/app-debug.apk'
+          
       - name: Build Debug APK with System Gradle
         run: gradle assembleDebug
 
