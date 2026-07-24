@@ -20,15 +20,27 @@ jobs:
       - name: Install System Gradle
         run: sudo apt-get update && sudo apt-get install -y gradle
 
-      - name: Upgrade Gradle Wrapper
-        run: gradle wrapper --gradle-version 8.5
+      - name: Find Project Directory and Build
+        run: |
+          # البحث تلقائياً عن المجلد الذي يحتوي على إعدادات أندرويد
+          PROJECT_DIR=$(find . -name "settings.gradle" -o -name "settings.gradle.kts" | head -n 1 | xargs dirname)
+          if [ -z "$PROJECT_DIR" ] || [ "$PROJECT_DIR" = "." ]; then
+            # إذا لم يوجد، ابحث عن ملفات المشروع العادية
+            PROJECT_DIR="."
+          fi
+          echo "Using project directory: $PROJECT_DIR"
+          cd "$PROJECT_DIR"
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug
+          # إعداد Gradle Wrapper في مجلد المشروع وبناء التطبيق
+          if [ ! -f "gradlew" ]; then
+            gradle wrapper --gradle-version 8.5
+          fi
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: '**/build/outputs/apk/debug/app-debug.apk'
           
