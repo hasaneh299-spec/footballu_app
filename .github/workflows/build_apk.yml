@@ -15,17 +15,13 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
-      - name: Install Gradle
+      - name: Install System Gradle
         run: sudo apt-get update && sudo apt-get install -y gradle
 
-      - name: Generate Gradle Wrapper if missing
-        run: |
-          if [ ! -f "gradlew" ]; then
-            gradle wrapper
-          fi
-          chmod +x gradlew
+      - name: Upgrade Gradle Wrapper
+        run: gradle wrapper --gradle-version 8.5
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
