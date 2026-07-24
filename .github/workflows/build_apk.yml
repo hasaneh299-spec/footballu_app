@@ -22,16 +22,17 @@ jobs:
 
       - name: Find Project Directory and Build
         run: |
-          # البحث تلقائياً عن المجلد الذي يحتوي على إعدادات أندرويد
-          PROJECT_DIR=$(find . -name "settings.gradle" -o -name "settings.gradle.kts" | head -n 1 | xargs dirname)
-          if [ -z "$PROJECT_DIR" ] || [ "$PROJECT_DIR" = "." ]; then
-            # إذا لم يوجد، ابحث عن ملفات المشروع العادية
-            PROJECT_DIR="."
+          # البحث الآمن عن ملف إعدادات أندرويد لتجنب أي أخطاء
+          SETTING_FILE=$(find . -name "settings.gradle" -o -name "settings.gradle.kts" | head -n 1)
+          if [ -n "$SETTING_FILE" ]; then
+            PROJECT_DIR=$(dirname "$SETTING_FILE")
+            echo "Using project directory: $PROJECT_DIR"
+            cd "$PROJECT_DIR"
+          else
+            echo "Using root directory."
           fi
-          echo "Using project directory: $PROJECT_DIR"
-          cd "$PROJECT_DIR"
 
-          # إعداد Gradle Wrapper في مجلد المشروع وبناء التطبيق
+          # إعداد Gradle Wrapper وبناء التطبيق
           if [ ! -f "gradlew" ]; then
             gradle wrapper --gradle-version 8.5
           fi
