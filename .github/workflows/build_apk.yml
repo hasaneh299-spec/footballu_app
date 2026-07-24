@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -25,7 +25,7 @@ jobs:
           channel: 'stable'
 
       - name: Create Android files
-        run: flutter create . --platforms=android
+        run: flutter create . --platforms=android --project-name=football_app
 
       - name: Get dependencies
         run: flutter pub get
