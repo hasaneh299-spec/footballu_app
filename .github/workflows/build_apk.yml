@@ -29,7 +29,7 @@ jobs:
 
           printf '<manifest xmlns:android="http://schemas.android.com/apk/res/android"\n    package="com.hasan.sportsapp">\n    <application\n        android:allowBackup="true"\n        android:label="Sports App"\n        android:supportsRtl="true"\n        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">\n        <activity\n            android:name=".MainActivity"\n            android:exported="true">\n            <intent-filter>\n                <action android:name="android.intent.action.MAIN" />\n                <category android:name="android.intent.category.LAUNCHER" />\n            </intent-filter>\n        </activity>\n    </application>\n</manifest>' > app/src/main/AndroidManifest.xml
 
-          printf 'pluginManagement {\n    repositories {\n        google()\n        mavenCentral()\n        gradlePluginPortal()\n    }\n}\ndependencyResolutionManagement {\n    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)\n    repositories {\n        google()\n        mavenCentral()\n    }\n}\nrootProject.name = "footballu_app"\ninclude \x27:app\x27' > settings.gradle
+          printf 'rootProject.name = "footballu_app"\ninclude \x27:app\x27' > settings.gradle
 
           printf 'buildscript {\n    repositories {\n        google()\n        mavenCentral()\n    }\n    dependencies {\n        classpath "com.android.tools.build:gradle:7.4.2"\n        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"\n    }\n}\nallprojects {\n    repositories {\n        google()\n        mavenCentral()\n    }\n}\ntask clean(type: Delete) {\n    delete rootProject.buildDir\n}' > build.gradle
 
