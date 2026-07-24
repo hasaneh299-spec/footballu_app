@@ -25,11 +25,19 @@ jobs:
       - name: Create Android Files
         run: flutter create . --platforms=android
 
+      - name: Fix minSdk
+        run: |
+          if [ -f android/app/build.gradle.kts ]; then
+            sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/g' android/app/build.gradle.kts
+          elif [ -f android/app/build.gradle ]; then
+            sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle
+          fi
+
       - name: Get Dependencies
         run: flutter pub get
 
       - name: Build APK Debug
-        run: flutter build apk --debug
+        run: flutter build apk --debug --info
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
