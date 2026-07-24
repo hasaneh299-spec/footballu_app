@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Android APK
 
 on:
   push:
@@ -17,31 +17,15 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: 'stable'
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Create Android Files
-        run: flutter create . --platforms=android
-
-      - name: Fix minSdk
-        run: |
-          if [ -f android/app/build.gradle.kts ]; then
-            sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 21/g' android/app/build.gradle.kts
-          elif [ -f android/app/build.gradle ]; then
-            sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 21/g' android/app/build.gradle
-          fi
-
-      - name: Get Dependencies
-        run: flutter pub get
-
-      - name: Build APK Debug
-        run: flutter build apk --debug -v
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: app-debug
-          path: build/app/outputs/flutter-apk/app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
           
