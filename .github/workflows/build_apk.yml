@@ -1,20 +1,38 @@
-name: footballu_app
-description: A new Flutter project for football scores and news.
-publish_to: 'none'
-version: 1.0.0+1
+name: Build Flutter APK
 
-environment:
-  sdk: ">=3.12.0 <4.0.0"
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
 
-dependencies:
-  flutter:
-    sdk: flutter
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-flutter:
-  uses-material-design: true
-  
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+          
