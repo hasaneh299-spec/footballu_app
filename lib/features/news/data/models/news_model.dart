@@ -1,0 +1,15 @@
+class NewsModel {
+  final String id;
+  final String title;
+  final String description;
+  final String imageUrl;
+  final String time;
+
+  NewsModel({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.imageUrl,
+    required this.time,
+  });
+}
