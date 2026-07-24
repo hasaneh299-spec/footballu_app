@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../matches/presentation/pages/matches_page.dart';
 import '../../../news/presentation/pages/news_page.dart';
+import '../../../standings/presentation/pages/standings_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,6 +16,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = const [
     MatchesPage(),
     NewsPage(),
+    StandingsPage(),
   ];
 
   @override
@@ -27,6 +29,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         selectedItemColor: Theme.of(context).primaryColor,
+        type: BottomNavigationBarType.fixed,
         onTap: (index) {
           setState(() {
             _currentIndex = index;
@@ -40,6 +43,10 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.article),
             label: 'الأخبار',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.leaderboard),
+            label: 'الترتيب',
           ),
         ],
       ),
