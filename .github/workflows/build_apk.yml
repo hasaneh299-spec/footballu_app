@@ -17,22 +17,23 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      - name: Install System Gradle
-        run: sudo apt-get update && sudo apt-get install -y gradle
-
-      - name: Find Project Directory and Build
+      - name: Debug and Find Build File
         run: |
-          # البحث الآمن عن ملف إعدادات أندرويد لتجنب أي أخطاء
-          SETTING_FILE=$(find . -name "settings.gradle" -o -name "settings.gradle.kts" | head -n 1)
-          if [ -n "$SETTING_FILE" ]; then
-            PROJECT_DIR=$(dirname "$SETTING_FILE")
-            echo "Using project directory: $PROJECT_DIR"
+          echo "=== Listing Repository Files ==="
+          find . -maxdepth 3 -not -path '*/.*'
+
+          # البحث عن ملف بناء أندرويد الحقيقي
+          BUILD_FILE=$(find . -name "build.gradle" -o -name "build.gradle.kts" | grep -v "build/" | head -n 1)
+          if [ -n "$BUILD_FILE" ]; then
+            PROJECT_DIR=$(dirname "$BUILD_FILE")
+            echo "Found build file at: $BUILD_FILE"
+            echo "Changing directory to: $PROJECT_DIR"
             cd "$PROJECT_DIR"
           else
-            echo "Using root directory."
+            echo "Warning: No build.gradle found, staying in root."
           fi
 
-          # إعداد Gradle Wrapper وبناء التطبيق
+          # إعداد Gradle Wrapper والبناء
           if [ ! -f "gradlew" ]; then
             gradle wrapper --gradle-version 8.5
           fi
