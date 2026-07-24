@@ -1,23 +1,41 @@
-name: football_app
-description: "A comprehensive football scores and news application."
-publish_to: 'none'
-version: 1.0.0+1
+name: Build Flutter APK
 
-environment:
-  sdk: '>=3.0.0 <4.0.0'
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
 
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
-  cached_network_image: ^3.3.1
-  equatable: ^2.0.5
-  http: ^1.2.0
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^3.0.0
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-flutter:
-  uses-material-design: true
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Create Android files
+        run: flutter create . --platforms=android
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/app-release.apk
+          
