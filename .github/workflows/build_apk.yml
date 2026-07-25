@@ -20,6 +20,12 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
+      - name: Download and Setup Gradle 7.5
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-7.5-bin.zip
+          unzip -q gradle-7.5-bin.zip
+          echo "$PWD/gradle-7.5/bin" >> $GITHUB_PATH
+
       - name: Generate Advanced Sports App Code
         run: |
           mkdir -p app/src/main/java/com/hasan/sportsapp
@@ -176,8 +182,8 @@ jobs:
                   applicationId 'com.hasan.sportsapp'
                   minSdk 21
                   targetSdk 33
-                  versionCode 2
-                  versionName "1.1"
+                  versionCode 3
+                  versionName "1.2"
               }
               buildTypes {
                   release {
@@ -194,13 +200,8 @@ jobs:
           }
           EOF
 
-      - name: Generate Gradle Wrapper
-        run: gradle wrapper --gradle-version 7.5
-
-      - name: Build Fresh APK Cleanly
-        run: |
-          chmod +x gradlew
-          ./gradlew clean assembleDebug --no-daemon --rerun-tasks
+      - name: Build APK Directly
+        run: gradle assembleDebug --no-daemon
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
