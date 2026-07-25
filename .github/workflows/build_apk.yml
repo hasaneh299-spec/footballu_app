@@ -20,11 +20,6 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Setup Gradle Environment
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '7.5'
-
       - name: Generate Advanced Sports App Code
         run: |
           mkdir -p app/src/main/java/com/hasan/sportsapp
@@ -54,7 +49,6 @@ jobs:
                       orientation = LinearLayout.VERTICAL
                   }
 
-                  // العنوان الرئيسي
                   val title = TextView(this).apply {
                       text = "⚽ فيوت بول نيوز - المباريات المباشرة"
                       textSize = 20f
@@ -64,7 +58,6 @@ jobs:
                   }
                   mainLayout.addView(title)
 
-                  // بطاقة مبارة مباشرة
                   val matchCard = LinearLayout(this).apply {
                       orientation = LinearLayout.VERTICAL
                       setBackgroundColor(Color.parseColor("#1E1E1E"))
@@ -72,7 +65,7 @@ jobs:
                   }
 
                   val matchTitle = TextView(this).apply {
-                      text = "دوري أبطال أوروبا | نهائي المرتقب"
+                      text = "دوري أبطال أوروبا | النهائي المرتقب"
                       textSize = 14f
                       setTextColor(Color.parseColor("#B0BEC5"))
                       setPadding(0, 0, 0, 16)
@@ -86,10 +79,8 @@ jobs:
                       gravity = Gravity.CENTER
                   }
                   matchCard.addView(teamsScore)
-
                   mainLayout.addView(matchCard)
 
-                  // فاصل
                   val spacer = TextView(this).apply {
                       text = "\n\n📊 جدول ترتيب الدوري الإسباني"
                       textSize = 18f
@@ -98,7 +89,6 @@ jobs:
                   }
                   mainLayout.addView(spacer)
 
-                  // جدول الترتيب المصغر
                   val standingsCard = LinearLayout(this).apply {
                       orientation = LinearLayout.VERTICAL
                       setBackgroundColor(Color.parseColor("#1E1E1E"))
@@ -186,8 +176,8 @@ jobs:
                   applicationId 'com.hasan.sportsapp'
                   minSdk 21
                   targetSdk 33
-                  versionCode 1
-                  versionName "1.0"
+                  versionCode 2
+                  versionName "1.1"
               }
               buildTypes {
                   release {
@@ -204,8 +194,13 @@ jobs:
           }
           EOF
 
-      - name: Build APK with Gradle 7.5
-        run: gradle assembleDebug --no-daemon
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper --gradle-version 7.5
+
+      - name: Build Fresh APK Cleanly
+        run: |
+          chmod +x gradlew
+          ./gradlew clean assembleDebug --no-daemon --rerun-tasks
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
