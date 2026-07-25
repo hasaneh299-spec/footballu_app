@@ -25,22 +25,96 @@ jobs:
         with:
           gradle-version: '7.5'
 
-      - name: Generate Android Project Files
+      - name: Generate Advanced Sports App Code
         run: |
           mkdir -p app/src/main/java/com/hasan/sportsapp
           mkdir -p app/src/main/res/values
 
           cat << 'EOF' > app/src/main/java/com/hasan/sportsapp/MainActivity.kt
           package com.hasan.sportsapp
+
           import android.app.Activity
+          import android.graphics.Color
           import android.os.Bundle
+          import android.view.Gravity
+          import android.widget.LinearLayout
+          import android.widget.ScrollView
           import android.widget.TextView
+
           class MainActivity : Activity() {
               override fun onCreate(savedInstanceState: Bundle?) {
                   super.onCreate(savedInstanceState)
-                  val tv = TextView(this)
-                  tv.text = "تطبيق الرياضة يعمل بنجاح!"
-                  setContentView(tv)
+
+                  val scrollView = ScrollView(this).apply {
+                      setBackgroundColor(Color.parseColor("#121212"))
+                      setPadding(24, 24, 24, 24)
+                  }
+
+                  val mainLayout = LinearLayout(this).apply {
+                      orientation = LinearLayout.VERTICAL
+                  }
+
+                  // العنوان الرئيسي
+                  val title = TextView(this).apply {
+                      text = "⚽ فيوت بول نيوز - المباريات المباشرة"
+                      textSize = 20f
+                      setTextColor(Color.parseColor("#00E676"))
+                      setPadding(0, 0, 0, 32)
+                      gravity = Gravity.CENTER
+                  }
+                  mainLayout.addView(title)
+
+                  // بطاقة مبارة مباشرة
+                  val matchCard = LinearLayout(this).apply {
+                      orientation = LinearLayout.VERTICAL
+                      setBackgroundColor(Color.parseColor("#1E1E1E"))
+                      setPadding(32, 32, 32, 32)
+                  }
+
+                  val matchTitle = TextView(this).apply {
+                      text = "دوري أبطال أوروبا | نهائي المرتقب"
+                      textSize = 14f
+                      setTextColor(Color.parseColor("#B0BEC5"))
+                      setPadding(0, 0, 0, 16)
+                  }
+                  matchCard.addView(matchTitle)
+
+                  val teamsScore = TextView(this).apply {
+                      text = "Real Madrid   2 - 1   Barcelona\n⏱️ الدقيقة 78 (الشوط الثاني)"
+                      textSize = 18f
+                      setTextColor(Color.parseColor("#FFFFFF"))
+                      gravity = Gravity.CENTER
+                  }
+                  matchCard.addView(teamsScore)
+
+                  mainLayout.addView(matchCard)
+
+                  // فاصل
+                  val spacer = TextView(this).apply {
+                      text = "\n\n📊 جدول ترتيب الدوري الإسباني"
+                      textSize = 18f
+                      setTextColor(Color.parseColor("#FFD700"))
+                      setPadding(0, 24, 0, 16)
+                  }
+                  mainLayout.addView(spacer)
+
+                  // جدول الترتيب المصغر
+                  val standingsCard = LinearLayout(this).apply {
+                      orientation = LinearLayout.VERTICAL
+                      setBackgroundColor(Color.parseColor("#1E1E1E"))
+                      setPadding(24, 24, 24, 24)
+                  }
+
+                  val tableContent = TextView(this).apply {
+                      text = "1. Real Madrid  -  54 Pts\n2. Barcelona      -  49 Pts\n3. Atletico Madrid - 42 Pts"
+                      textSize = 15f
+                      setTextColor(Color.parseColor("#E0E0E0"))
+                  }
+                  standingsCard.addView(tableContent)
+                  mainLayout.addView(standingsCard)
+
+                  scrollView.addView(mainLayout)
+                  setContentView(scrollView)
               }
           }
           EOF
@@ -50,7 +124,7 @@ jobs:
               package="com.hasan.sportsapp">
               <application
                   android:allowBackup="true"
-                  android:label="Sports App"
+                  android:label="Football News"
                   android:supportsRtl="true"
                   android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
                   <activity
