@@ -30,16 +30,108 @@ jobs:
           mkdir -p app/src/main/java/com/hasan/sportsapp
           mkdir -p app/src/main/res/values
 
-          # كود تطبيق الرياضة بلغة Kotlin
-          printf 'package com.hasan.sportsapp\nimport android.app.Activity\nimport android.os.Bundle\nimport android.widget.TextView\nclass MainActivity : Activity() {\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        val tv = TextView(this)\n        tv.text = "تطبيق الرياضة يعمل بنجاح!"\n        setContentView(tv)\n    }\n}' > app/src/main/java/com/hasan/sportsapp/MainActivity.kt
+          cat << 'EOF' > app/src/main/java/com/hasan/sportsapp/MainActivity.kt
+          package com.hasan.sportsapp
+          import android.app.Activity
+          import android.os.Bundle
+          import android.widget.TextView
+          class MainActivity : Activity() {
+              override fun onCreate(savedInstanceState: Bundle?) {
+                  super.onCreate(savedInstanceState)
+                  val tv = TextView(this)
+                  tv.text = "تطبيق الرياضة يعمل بنجاح!"
+                  setContentView(tv)
+              }
+          }
+          EOF
 
-          printf '<manifest xmlns:android="http://schemas.android.com/apk/res/android"\n    package="com.hasan.sportsapp">\n    <application\n        android:allowBackup="true"\n        android:label="Sports App"\n        android:supportsRtl="true"\n        android:theme="@android:style/Theme.DeviceDefault.NoActionBar">\n        <activity\n            android:name=".MainActivity"\n            android:exported="true">\n            <intent-filter>\n                <action android:name="android.intent.action.MAIN" />\n                <category android:name="android.intent.category.LAUNCHER" />\n            </intent-filter>\n        </activity>\n    </application>\n</manifest>' > app/src/main/AndroidManifest.xml
+          cat << 'EOF' > app/src/main/AndroidManifest.xml
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+              package="com.hasan.sportsapp">
+              <application
+                  android:allowBackup="true"
+                  android:label="Sports App"
+                  android:supportsRtl="true"
+                  android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
 
-          printf 'pluginManagement {\n    repositories {\n        google()\n        mavenCentral()\n        gradlePluginPortal()\n    }\n}\ndependencyResolutionManagement {\n    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)\n    repositories {\n        google()\n        mavenCentral()\n    }\n}\nrootProject.name = "footballu_app"\ninclude \x27:app\x27' > settings.gradle
+          cat << 'EOF' > settings.gradle
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          rootProject.name = "footballu_app"
+          include ':app'
+          EOF
 
-          printf 'buildscript {\n    dependencies {\n        classpath "com.android.tools.build:gradle:7.4.2"\n        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"\n    }\n}\ntask clean(type: Delete) {\n    delete rootProject.buildDir\n}' > build.gradle
+          cat << 'EOF' > build.gradle
+          buildscript {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath "com.android.tools.build:gradle:7.4.2"
+                  classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.0"
+              }
+          }
+          task clean(type: Delete) {
+              delete rootProject.buildDir
+          }
+          EOF
 
-          printf 'plugins {\n    id \x27com.android.application\x27\n    id \x27org.jetbrains.kotlin.android\x27\n}\nandroid {\n    namespace \x27com.hasan.sportsapp\x27\n    compileSdk 33\n    defaultConfig {\n        applicationId \x27com.hasan.sportsapp\x27\n        minSdk 21\n        targetSdk 33\n        versionCode 1\n        versionName "1.0"\n    }\n    buildTypes {\n        release {\n            minifyEnabled false\n        }\n    }\n    compileOptions {\n        sourceCompatibility JavaVersion.VERSION_17\n        targetCompatibility JavaVersion.VERSION_17\n    }\n    kotlinOptions {\n        jvmTarget = \x2717\x27\n    }\n}\ndependencies {\n    implementation \x27androidx.core:core-ktx:1.9.0\x27\n}' > app/build.gradle
+          cat << 'EOF' > app/build.gradle
+          plugins {
+              id 'com.android.application'
+              id 'org.jetbrains.kotlin.android'
+          }
+          android {
+              namespace 'com.hasan.sportsapp'
+              compileSdk 33
+              defaultConfig {
+                  applicationId 'com.hasan.sportsapp'
+                  minSdk 21
+                  targetSdk 33
+                  versionCode 1
+                  versionName "1.0"
+              }
+              buildTypes {
+                  release {
+                      minifyEnabled false
+                  }
+              }
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+              kotlinOptions {
+                  jvmTarget = '17'
+              }
+          }
+          dependencies {
+              implementation 'androidx.core:core-ktx:1.9.0'
+          }
+          EOF
 
       - name: Build APK with Gradle 7.5
         run: gradle assembleDebug --no-daemon
