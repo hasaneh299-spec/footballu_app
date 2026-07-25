@@ -128,9 +128,6 @@ jobs:
                   jvmTarget = '17'
               }
           }
-          dependencies {
-              implementation 'androidx.core:core-ktx:1.9.0'
-          }
           EOF
 
       - name: Build APK with Gradle 7.5
